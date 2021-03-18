@@ -1,5 +1,5 @@
 import matplotlib.pyplot as pyplot
-import numpy as numpy
+import numpy as np
 import seaborn as sns
 import scipy as sp 
 
