@@ -1,6 +1,8 @@
 import numpy as np 
 import torch
 import scipy as sp 
+import powerlaw
+
 
 
 def power_method(M, iterations=100, device="cuda:0"):
@@ -25,6 +27,10 @@ def power_method(M, iterations=100, device="cuda:0"):
 	return top_eig
 
 def stable_rank(M, device="cuda:0"):
+	"""Computes the stable rank of a matrix.
+	Input: the matrix, M
+	Return: ||M||^2_F / ||M||^2_2
+	"""
 	if device == "cuda:0":
 		M.to("cuda:0")
 	frob = torch.linalg.norm(M, ord='fro')**2
@@ -33,6 +39,12 @@ def stable_rank(M, device="cuda:0"):
 
 
 def generate_pl(N_1, N_2, a, loc = 0., scale=1.0):
+	""" Generates a matrix where the entries are given by a power-law
+	Input: matrix rows (N_1), matrix columns (N_2), power-law exponent (a) 
+	location (loc, default: 0), scale (default: 0)
+
+	Return: M, matrix with power-law entries.
+	"""
 	M = torch.zeros((N_1, N_2))
 	for i in range(N_1):
 		for j in range(N_2):
