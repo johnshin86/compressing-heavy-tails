@@ -51,4 +51,24 @@ def generate_pl(N_1, N_2, a, loc = 0., scale=1.0):
 			M[i][j] = sp.stats.powerlaw.rvs(a, loc= loc, scale=scale)
 	return M
 
+def fit_pl(M):
+	"""Fits a power-law to the matrix elements of M.
 
+	Input: M, matrix
+	Output: power law exponent (a), R-square value (R), p-value (p)
+	"""
+	M = M.flatten()
+	results = powerlaw.Fit(M)
+	a = results.power_law.alpha
+	R, p = results.distribution_compare('power_law', 'lognormal')
+	return a, R, p
+
+def compute_acc(model, test_loader, device="cuda:0"):
+	pass
+
+def get_data(train_batch_size=100, test_batch_size=100, random_labels=False):
+	pass
+
+def compress_dense_compare(model, test_loader, device="cuda:0"):
+	test_acc = compute_acc(model, test_loader, device="cuda:0")
+	return test_acc
