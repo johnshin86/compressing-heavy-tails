@@ -13,14 +13,16 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 
 
-def power_method(M, iterations=100, device="cuda:0"):
+def power_method(W, iterations=100, device="cuda:0"):
 	"""Computes the top eigenvalue of a matrix.
 
 	Input: the matrix, M
 	Optional: iterations (default: 100), device (default: cuda:0)
 	Return: the largest eigenvalue of M.
 	"""
-	_ , m = M.shape
+	_ , m = W.shape
+
+	M = W.t() @ W
 	vk = torch.empty(m, device=device).normal_(mean=0, std=1.)
 
 	for i in range(iterations):
