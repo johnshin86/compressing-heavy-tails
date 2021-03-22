@@ -41,7 +41,6 @@ def stable_rank(M, device="cuda:0"):
 def generate_pl(N_1, N_2, a):
 	""" Generates a matrix where the entries are given by a power-law
 	Input: matrix rows (N_1), matrix columns (N_2), power-law exponent (a) 
-	location (loc, default: 0), scale (default: 0)
 
 	Return: matrix with power-law entries, M
 	"""
