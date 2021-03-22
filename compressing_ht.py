@@ -38,7 +38,7 @@ def stable_rank(M, device="cuda:0"):
 	return frob/spectral
 
 
-def generate_pl(N_1, N_2, a, loc = 0., scale=1.0):
+def generate_pl(N_1, N_2, a):
 	""" Generates a matrix where the entries are given by a power-law
 	Input: matrix rows (N_1), matrix columns (N_2), power-law exponent (a) 
 	location (loc, default: 0), scale (default: 0)
@@ -48,7 +48,7 @@ def generate_pl(N_1, N_2, a, loc = 0., scale=1.0):
 	M = torch.zeros((N_1, N_2))
 	for i in range(N_1):
 		for j in range(N_2):
-			M[i][j] = sp.stats.powerlaw.rvs(a, loc= loc, scale=scale)
+			M[i][j] = np.random.pareto(a)
 	return M
 
 def fit_pl(M):
