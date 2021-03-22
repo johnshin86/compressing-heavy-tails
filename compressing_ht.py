@@ -63,6 +63,10 @@ def fit_pl(M):
 	R, p = results.distribution_compare('power_law', 'lognormal')
 	return a, R, p
 
+def rename_attribute(obj, old_name, new_name):
+    obj._modules[new_name] = obj._modules.pop(old_name)
+
+
 def compress_dense_compare(model, test_loader, device="cuda:0"):
 	"""Computes the accuracy of a model pre- and post- compressing the final dense layer.
 
@@ -80,7 +84,7 @@ def compress_dense_compare(model, test_loader, device="cuda:0"):
   		for j in range(j_max):
     		if torch.abs(model.output.weight[i,j]) < std1:
       			with torch.no_grad():
-        			model.output.weight[i,j] = torch.normal(mean=mean1, std=std1, size=(1,))
+        			list(model.children())[-1].weight[i][j] = torch.normal(mean=mean1, std=std1, size=(1,))
 
     post_test_acc = compute_acc(model, test_loader, device="cuda:0")
 
