@@ -29,7 +29,7 @@ def power_method(M, iterations=100, device="cuda:0"):
 def stable_rank(M, device="cuda:0"):
 	"""Computes the stable rank of a matrix.
 	Input: the matrix, M
-	Return: ||M||^2_F / ||M||^2_2
+	Return: Stable rank of M, ||M||^2_F / ||M||^2_2
 	"""
 	if device == "cuda:0":
 		M.to("cuda:0")
@@ -43,7 +43,7 @@ def generate_pl(N_1, N_2, a, loc = 0., scale=1.0):
 	Input: matrix rows (N_1), matrix columns (N_2), power-law exponent (a) 
 	location (loc, default: 0), scale (default: 0)
 
-	Return: M, matrix with power-law entries.
+	Return: matrix with power-law entries, M
 	"""
 	M = torch.zeros((N_1, N_2))
 	for i in range(N_1):
