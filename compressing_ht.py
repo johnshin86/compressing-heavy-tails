@@ -52,7 +52,7 @@ def generate_pl(N_1, N_2, a):
 
 	Return: matrix with power-law entries, M
 	"""
-	M = torch.zeros((N_1, N_2))
+	M = torch.zeros((N_1, N_2)).to("cuda:0")
 	for i in range(N_1):
 		for j in range(N_2):
 			M[i][j] = np.random.pareto(a)
