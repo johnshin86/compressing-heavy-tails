@@ -73,18 +73,13 @@ def compress_dense_compare(model, test_loader, device="cuda:0"):
 	Output: pre_test_acc, post_test_acc
 	"""
 	pre_test_acc = compute_acc(model, test_loader, device="cuda:0")
-
 	mean1 = torch.mean(model.output.weight.flatten().detach())
 	std1 = torch.std(model.output.weight.flatten().detach())
-
 	i_max, j_max = model.output.weight.size()
-
 	for i in range(i_max):
 		for j in range(j_max):
 			if torch.abs(model.output.weight[i,j]) < std1:
 				with torch.no_grad():
 					list(model.children())[-1].weight[i][j] = torch.normal(mean=mean1, std=std1, size=(1,))
-
-    post_test_acc = compute_acc(model, test_loader, device="cuda:0")
-
+	post_test_acc = compute_acc(model, test_loader, device="cuda:0")
 	return pre_test_acc, post_test_acc
