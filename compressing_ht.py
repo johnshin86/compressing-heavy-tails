@@ -80,10 +80,10 @@ def compress_dense_compare(model, test_loader, device="cuda:0"):
 	i_max, j_max = model.output.weight.size()
 
 	for i in range(i_max):
-  		for j in range(j_max):
-    		if torch.abs(model.output.weight[i,j]) < std1:
-      			with torch.no_grad():
-        			list(model.children())[-1].weight[i][j] = torch.normal(mean=mean1, std=std1, size=(1,))
+		for j in range(j_max):
+			if torch.abs(model.output.weight[i,j]) < std1:
+				with torch.no_grad():
+					list(model.children())[-1].weight[i][j] = torch.normal(mean=mean1, std=std1, size=(1,))
 
     post_test_acc = compute_acc(model, test_loader, device="cuda:0")
 
