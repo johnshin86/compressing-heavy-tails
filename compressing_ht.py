@@ -80,10 +80,10 @@ def compress_dense_compare(model, test_loader, device="cuda:0", iterations = 5):
 	"""Computes the accuracy of a model pre- and post- compressing the final dense layer.
 
 	Input: model, test_loader, device (default: "cuda:0")
-	Output: pre_test_acc, post_test_acc
+	Output: pre_test_acc, post_test_accs
 	"""
 	pre_test_acc = compute_acc(model, test_loader, device="cuda:0")
-	post_accs = []
+	post_test_accs = []
 
 	W = model.output.weight.detach()
 	i_max, j_max = W.size()
@@ -100,9 +100,9 @@ def compress_dense_compare(model, test_loader, device="cuda:0", iterations = 5):
 		W_new = W_gauss + W_B
 		with torch.no_grad():
 			list(model.children())[-1].weight = torch.nn.Parameter(W_new)
-		post_acc = compute_acc(model, test_loader, device="cuda:0")
-		post_accs.append(post_acc)
-	return pre_test_acc, post_test_acc
+		post_test_acc = compute_acc(model, test_loader, device="cuda:0")
+		post_test_accs.append(post_test_acc)
+	return pre_test_acc, post_test_accs
 
 
 def compute_acc(model, data_loader, device, class_label_filter=None):
