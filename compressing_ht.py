@@ -76,22 +76,32 @@ def rename_attribute(obj, old_name, new_name):
     obj._modules[new_name] = obj._modules.pop(old_name)
 
 
-def compress_dense_compare(model, test_loader, device="cuda:0"):
+def compress_dense_compare(model, test_loader, device="cuda:0", iterations = 5):
 	"""Computes the accuracy of a model pre- and post- compressing the final dense layer.
 
 	Input: model, test_loader, device (default: "cuda:0")
 	Output: pre_test_acc, post_test_acc
 	"""
 	pre_test_acc = compute_acc(model, test_loader, device="cuda:0")
-	mean1 = torch.mean(model.output.weight.flatten().detach())
-	std1 = torch.std(model.output.weight.flatten().detach())
-	i_max, j_max = model.output.weight.size()
-	for i in range(i_max):
-		for j in range(j_max):
-			if torch.abs(model.output.weight[i,j]) < std1:
-				with torch.no_grad():
-					list(model.children())[-1].weight[i][j] = torch.normal(mean=mean1, std=std1, size=(1,))
-	post_test_acc = compute_acc(model, test_loader, device="cuda:0")
+	post_accs = []
+
+	W = model.output.weight.detach()
+	i_max, j_max = W.size()
+	mean1 = torch.mean(W.flatten())
+	std1 = torch.std(W.flatten())
+
+	W_A_mask = torch.abs(W) <= std1
+	W_B_mask = torch.abs(W) > std1
+	W_B = torch.mul(W_B_mask, W)
+
+	for i in range(iterations):
+		W_gauss_tmp = torch.empty((i_max, j_max)).normal_(mean=mean1, std=std1).to(device)
+		W_gauss = torch.mul(W_A_mask, W_gauss_tmp)
+		W_new = W_gauss + W_B
+		with torch.no_grad():
+			list(model.children())[-1].weight = torch.nn.Parameter(W_new)
+		post_acc = compute_acc(model, test_loader, device="cuda:0")
+		post_accs.append(post_acc)
 	return pre_test_acc, post_test_acc
 
 
