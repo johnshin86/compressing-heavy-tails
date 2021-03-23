@@ -69,8 +69,8 @@ def fit_pl(M):
 	M = M.flatten()
 	results = powerlaw.Fit(M)
 	a = results.power_law.alpha
-	R, p = results.distribution_compare('power_law', 'lognormal')
-	return a, R, p
+	#R, p = results.distribution_compare('power_law', 'lognormal')
+	return a #, R, p
 
 def rename_attribute(obj, old_name, new_name):
     obj._modules[new_name] = obj._modules.pop(old_name)
