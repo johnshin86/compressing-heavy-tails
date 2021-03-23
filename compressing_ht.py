@@ -82,7 +82,7 @@ def compress_dense_compare(model, test_loader, device="cuda:0", iterations = 5):
 	Input: model, test_loader, device (default: "cuda:0")
 	Output: pre_test_acc, post_test_accs
 	"""
-	pre_test_acc = compute_acc(model, test_loader, device="cuda:0")
+	pre_test_acc = compute_acc(model, test_loader, device="cuda:0").cpu().numpy()
 	post_test_accs = []
 
 	W = model.output.weight.detach()
@@ -100,8 +100,9 @@ def compress_dense_compare(model, test_loader, device="cuda:0", iterations = 5):
 		W_new = W_gauss + W_B
 		with torch.no_grad():
 			list(model.children())[-1].weight = torch.nn.Parameter(W_new)
-		post_test_acc = compute_acc(model, test_loader, device="cuda:0")
+		post_test_acc = compute_acc(model, test_loader, device="cuda:0").cpu().numpy()
 		post_test_accs.append(post_test_acc)
+	post_test_accs = np.array(post_test_accs)
 	return pre_test_acc, post_test_accs
 
 
