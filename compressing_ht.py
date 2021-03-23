@@ -134,7 +134,7 @@ def compute_acc(model, data_loader, device, class_label_filter=None):
 
 	return correct_pred.float()/num_examples * 100
 
-def get_data(
+def get_data_cifar10(
 		train_batch_size=100,
 		test_batch_size=100,
 		train_range=None, 
