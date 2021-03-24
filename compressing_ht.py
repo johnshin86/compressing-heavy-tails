@@ -274,12 +274,12 @@ def get_data_svhn(
 		normalize])
 	train_dataset = datasets.SVHN(
 								root='data', 
-								train=True, 
+								split='train', 
 								transform=transform_train,
 								download=True)
 	test_dataset = datasets.SVHN(
 								root='data', 
-								train=False, 
+								split='test', 
 								transform=transform_test,
 								download=True)
 	if random_labels:
