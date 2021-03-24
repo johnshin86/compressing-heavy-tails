@@ -201,7 +201,7 @@ def get_data_cifar100(
 		test_range=None, 
 		random_labels=False, 
 		seed = 0):
-	"""Get CIFAR10 data. If random_labels=True, randomizes the labels. 
+	"""Get CIFAR100 data. If random_labels=True, randomizes the labels. 
 	Inputs: train_batch_size (default: 100), test_batch_size (default:100), train_range (default: None), test_range (default: None), random_labels (default: False), seed (default: None)
 	Return: train dataset, test dataset, train loader, test loader
 	"""
@@ -261,23 +261,23 @@ def get_data_svhn(
 		test_range=None, 
 		random_labels=False, 
 		seed = 0):
-	"""Get CIFAR10 data. If random_labels=True, randomizes the labels. 
+	"""Get SVHN data. If random_labels=True, randomizes the labels. 
 	Inputs: train_batch_size (default: 100), test_batch_size (default:100), train_range (default: None), test_range (default: None), random_labels (default: False), seed (default: None)
 	Return: train dataset, test dataset, train loader, test loader
 	"""
-	normalize = transforms.Normalize(mean=[0.5071, 0.4867, 0.4408], std=[0.2675, 0.2565, 0.2761])
+	normalize = transforms.Normalize(mean=[0.4376821, 0.4437697, 0.47280442], std= [0.19803012, 0.20101562, 0.19703614])
 	transform_train = transforms.Compose([
 		transforms.ToTensor(),
 		normalize])
 	transform_test = transforms.Compose([
 		transforms.ToTensor(),
 		normalize])
-	train_dataset = datasets.CIFAR100(
+	train_dataset = datasets.SVHN(
 								root='data', 
 								train=True, 
 								transform=transform_train,
 								download=True)
-	test_dataset = datasets.CIFAR100(
+	test_dataset = datasets.SVHN(
 								root='data', 
 								train=False, 
 								transform=transform_test,
