@@ -322,43 +322,44 @@ def em(x, y, lam=.01, eta=100):
 	w2 = np.random.rand(2)
 
 	for _ in range(100):
-		plt.plot(r, np.dot(rx, w1), '-r', alpha=0.5)
-		plt.plot(r, np.dot(rx, w2), '-g', alpha=0.5)
+		if 0:
+			plt.plot(r, np.dot(rx, w1), '-r', alpha=0.5)
+			plt.plot(r, np.dot(rx, w2), '-g', alpha=0.5)
 
-	err1 = y - np.dot(x, w1)
-	err2 = y - np.dot(x, w2)
+		err1 = y - np.dot(x, w1)
+		err2 = y - np.dot(x, w2)
 
-	prbs = np.zeros( (len(y), 2))
-	prbs[:,0] = -.5*eta*err1**2
-	prbs[:,1] = -.5*eta*err2**2
+		prbs = np.zeros( (len(y), 2))
+		prbs[:,0] = -.5*eta*err1**2
+		prbs[:,1] = -.5*eta*err2**2
 
-	pi = np.tile(rpi, (len(x), 1))*np.exp(prbs)
-	pi /= np.tile(np.sum(pi, 1), (2,1)).T
+		pi = np.tile(rpi, (len(x), 1))*np.exp(prbs)
+		pi /= np.tile(np.sum(pi, 1), (2,1)).T
 
-	rpi = np.sum(pi, 0)
-	rpi /= np.sum(rpi)
+		rpi = np.sum(pi, 0)
+		rpi /= np.sum(rpi)
 
-	pi1x = np.tile(pi[:,0], (2,1)).T*x
-	xp1 = np.dot(pi1x.T, x) + np.eye(2)*lam/eta
-	yp1 = np.dot(pi1x.T, y)
-	w1 = lin.solve(xp1, yp1)
+		pi1x = np.tile(pi[:,0], (2,1)).T*x
+		xp1 = np.dot(pi1x.T, x) + np.eye(2)*lam/eta
+		yp1 = np.dot(pi1x.T, y)
+		w1 = lin.solve(xp1, yp1)
 
-	pi2x=np.tile(pi[:,1],(2,1)).T*x
-	xp2=np.dot(pi2x.T,x)+np.eye(2)*lam/eta
-	yp2=np.dot(pi[:,1]*y,x)
-	w2=lin.solve(xp2,yp2)
+		pi2x=np.tile(pi[:,1],(2,1)).T*x
+		xp2=np.dot(pi2x.T,x)+np.eye(2)*lam/eta
+		yp2=np.dot(pi[:,1]*y,x)
+		w2=lin.solve(xp2,yp2)
 
-	eta = np.sum(pi)/np.sum(-prbs/eta*pi)
+		eta = np.sum(pi)/np.sum(-prbs/eta*pi)
 
-	obj=np.sum(prbs*pi)-np.sum(pi[pi>1e-50]*np.log(pi[pi>1e-50]))+np.sum(pi*np.log(np.tile(rpi,(len(x),1))))+np.log(eta)*np.sum(pi)
-	print(obj,eta,rpi,w1,w2)
+		obj=np.sum(prbs*pi)-np.sum(pi[pi>1e-50]*np.log(pi[pi>1e-50]))+np.sum(pi*np.log(np.tile(rpi,(len(x),1))))+np.log(eta)*np.sum(pi)
+		print(obj,eta,rpi,w1,w2)
 
-	try:
-		if np.isnan(obj): break
-		if np.abs(obj-oldobj)<1e-2: break
-	except:
-		pass
+		try:
+			if np.isnan(obj): break
+			if np.abs(obj-oldobj)<1e-2: break
+		except:
+			pass
 
-	oldobj=obj
+		oldobj=obj
 
 	return w1, w2 
