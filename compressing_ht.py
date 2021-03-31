@@ -316,8 +316,25 @@ def get_data_svhn(
 	return train_dataset, test_dataset, train_loader, test_loader
 
 def em(x, y, lam=.01, eta=100):
+	"""Performs expectation maximization assuming a mixture of linear models. 
+	Inputs:
+	X: array of dimension (N, 2), where N is the number of data points.
+	Y: array of dimension (N)
+	lam: regularulization parameter, default: .01. 
+	eta: precision term for the probability of the data under the regression function. 
+
+	Returns:
+	w1: weights for first linear fit.
+	w2: weights for second linear fit. 
+	"""
+
+	# Mixture weights
 	rpi = np.zeros((2)) + .5
+
+	# Expected mixture weights for each data point
 	pi = np.zeros((len(x), 2)) + 0.5 
+
+	# regression weights
 	w1 = np.random.rand(2)
 	w2 = np.random.rand(2)
 
@@ -326,6 +343,7 @@ def em(x, y, lam=.01, eta=100):
 			plt.plot(r, np.dot(rx, w1), '-r', alpha=0.5)
 			plt.plot(r, np.dot(rx, w2), '-g', alpha=0.5)
 
+		#Compute likelihood for each data point
 		err1 = y - np.dot(x, w1)
 		err2 = y - np.dot(x, w2)
 
@@ -333,9 +351,12 @@ def em(x, y, lam=.01, eta=100):
 		prbs[:,0] = -.5*eta*err1**2
 		prbs[:,1] = -.5*eta*err2**2
 
+		#Compute expected mixture of weights
 		pi = np.tile(rpi, (len(x), 1))*np.exp(prbs)
 		pi /= np.tile(np.sum(pi, 1), (2,1)).T
 
+
+		#Maximize with respect to the regression weights.
 		rpi = np.sum(pi, 0)
 		rpi /= np.sum(rpi)
 
@@ -349,8 +370,10 @@ def em(x, y, lam=.01, eta=100):
 		yp2=np.dot(pi[:,1]*y,x)
 		w2=lin.solve(xp2,yp2)
 
+		#Maximize with respect to precision.
 		eta = np.sum(pi)/np.sum(-prbs/eta*pi)
 
+		#Objective function. Unstable as the pi's become concentrated on a single component. 
 		obj=np.sum(prbs*pi)-np.sum(pi[pi>1e-50]*np.log(pi[pi>1e-50]))+np.sum(pi*np.log(np.tile(rpi,(len(x),1))))+np.log(eta)*np.sum(pi)
 		print(obj,eta,rpi,w1,w2)
 
